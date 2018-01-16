@@ -31,7 +31,7 @@
 import datetime
 import time
 # import requests
-from local import *
+from .local import r
 
 import supybot.utils as utils
 from supybot.commands import *
