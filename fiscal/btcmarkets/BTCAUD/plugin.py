@@ -59,7 +59,9 @@ class BTCAUD(callbacks.Plugin):
     @internationalizeDocstring
     def ticker(self, irc, msg, args):
         """Displays a ticker of the BTC to AUD prices."""
-        r = requests.get(url, verify=True)
+        # r = requests.get(url, verify=True)
+        r = requests.get(url, verify=True, headers=ca["headers"],
+                         proxies=ca["proxies"])
         if r is not None and r.status_code == 200:
             ask = str(r.json()["bestAsk"])
             bid = str(r.json()["bestBid"])
