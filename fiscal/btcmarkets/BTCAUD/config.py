@@ -52,10 +52,7 @@ BTCAUD = conf.registerPlugin('BTCAUD')
 # This is where your configuration variables (if any) should go.  For example:
 # conf.registerGlobalValue(BTCAUD, 'someConfigVariableName',
 #     registry.Boolean(False, _("""Help for someConfigVariableName.""")))
-from . import cargs
-# from cargs import permanent
-ca = cargs.permanent.client_args
-domain = "https://api.btcmarkets.net"
+
 
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

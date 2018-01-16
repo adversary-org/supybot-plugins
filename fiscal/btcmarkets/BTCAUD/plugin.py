@@ -28,8 +28,22 @@
 
 ###
 
+import datetime
 import requests
 import time
+
+from .cargs import permanent
+ca = permanent.client_args
+domain = "https://api.btcmarkets.net"
+uri = "/market/BTC/AUD/tick"
+url = "{0}{1}".format(domain, uri)
+try:
+    r = requests.get(url, verify=True, headers=ca["headers"],
+                     proxies=ca["proxies"])
+    # r = requests.get(url, verify=True)
+except:
+    r = None
+    pass
 
 import supybot.utils as utils
 from supybot.commands import *
@@ -48,20 +62,15 @@ except ImportError:
 class BTCAUD(callbacks.Plugin):
     """BTC to AUD prices from btcmarkets.net."""
     threaded = True
-    from config import ca
-    from config import domain
-    uri = "/market/BTC/AUD/tick"
-    url = domain + uri
-
     @internationalizeDocstring
     def ticker(self, irc, msg, args):
         """Displays a ticker of the BTC to AUD prices."""
-        try:
-        r = requests.get(url, verify=True, headers=ca["headers"],
-                         proxies=ca["proxies"])
+        
+        if r is not None and r.status_code == 200:
             ask = str(r.json()["bestAsk"])
             bid = str(r.json()["bestBid"])
             last = str(r.json()["lastPrice"])
+            spread = str(round(r.json()["bestAsk"] - r.json()["bestBid"], 2))
             tstamp = r.json()["timestamp"]
             ltime = time.ctime(tstamp)
             utime = time.asctime(time.gmtime(tstamp))
@@ -121,9 +130,15 @@ class BTCAUD(callbacks.Plugin):
                 p = "BTCMarkets BTCAUD | Best bid: {0}, Best ask: {1}, Bid-Ask spread: {2}, last trade: {3} | valid at: {4} UTC | {8}".format(bid, ask, spread, last, utime, since)
             else:
                 p = "BTCMarkets BTCAUD | Best bid: {0}, Best ask: {1}, Bid-Ask spread: {2}, last trade: {3} | valid at: {4} UTC | {8}".format(bid, ask, spread, last, utime, since)
-        except:
-            p = "An error occurred."
-        irc.reply(_(p))
+        elif r is not None and r.ok is False and r.status_code is None:
+            p = "Error code: {0}".format("unknown1")
+        elif r is not None and r.ok is False:
+            p = "Error code: {0}".format(str(r.status_code))
+        elif r is None:
+            p = "Error code: {0}".format("unknown2")
+        else:
+            p = "Error code: {0}".format("unknown0")
+        irc.reply(format(_('%s'), (p)), prefixNick=False)
     ticker = wrap(ticker)
         
         

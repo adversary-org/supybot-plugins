@@ -63,8 +63,6 @@ class permanent:
         except socket.error:
             return False
 
-    def checksocks()
-
     if checktor1() is True:
         client_args = {
             "verify": True,
