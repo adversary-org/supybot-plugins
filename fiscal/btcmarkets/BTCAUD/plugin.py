@@ -29,9 +29,14 @@
 ###
 
 import datetime
+import requests
 import time
-# import requests
-from .local import r
+
+from .local.cleanup import *
+
+from . import local
+ca = local.ca
+url = local.url
 
 import supybot.utils as utils
 from supybot.commands import *
@@ -47,13 +52,16 @@ except ImportError:
     _ = lambda x: x
 
 
+
 class BTCAUD(callbacks.Plugin):
     """BTC to AUD prices from btcmarkets.net."""
     threaded = True
     @internationalizeDocstring
     def ticker(self, irc, msg, args):
         """Displays a ticker of the BTC to AUD prices."""
-        
+        # r = requests.get(url, verify=True)
+        r = requests.get(url, verify=True, headers=ca["headers"],
+                         proxies=ca["proxies"])
         if r is not None and r.status_code == 200:
             ask = str(r.json()["bestAsk"])
             bid = str(r.json()["bestBid"])
@@ -127,11 +135,11 @@ class BTCAUD(callbacks.Plugin):
         else:
             p = "Error code: {0}".format("unknown0")
         irc.reply(format(_('%s'), (p)), prefixNick=False)
-    ticker = wrap(ticker)
-        
+    ticker = wrap(ticker)        
         
 
 Class = BTCAUD
+
 
 
 # vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
