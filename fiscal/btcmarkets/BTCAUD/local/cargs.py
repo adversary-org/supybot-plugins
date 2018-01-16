@@ -55,19 +55,12 @@ class permanent:
         except socket.error:
             return False
 
-    def checksocks():
-        try:
-            s = socket.socket()
-            s.connect(("127.0.0.1", 1080))
-            return True
-        except socket.error:
-            return False
-
     if checktor1() is True:
         client_args = {
             "verify": True,
             "headers": {
-                "User-Agent": "Mozilla gecko compliant python script"
+                "User-Agent": "Mozilla gecko compliant python script",
+                "Cache-Control": "no-cache",
                 },
             "proxies": {
                 "http": "socks5://127.0.0.1:9050",
@@ -79,7 +72,8 @@ class permanent:
         client_args = {
             "verify": True,
             "headers": {
-                "User-Agent": "Mozilla gecko compliant python script"
+                "User-Agent": "Mozilla gecko compliant python script",
+                "Cache-Control": "no-cache",
                 },
             "proxies": {
                 "http": "socks5://127.0.0.1:9150",
@@ -87,23 +81,12 @@ class permanent:
                 }
             }
         msg = "Tor configuration set on localhost and port 9150."
-    elif checksocks() is True:
-        client_args = {
-            "verify": True,
-            "headers": {
-                "User-Agent": "Mozilla gecko compliant python script"
-                },
-            "proxies": {
-                "http": "socks5://127.0.0.1:1080",
-                "https": "socks5://127.0.0.1:1080",
-                }
-            }
-        msg = "SOCKS configuration set on localhost and port 1080."
     else:
         client_args = {
             "verify": True,
             "headers": {
-                "User-Agent": "Mozilla gecko compliant python script"
+                "User-Agent": "Mozilla gecko compliant python script",
+                "Cache-Control": "no-cache",
                 },
             "proxies": False
             }
